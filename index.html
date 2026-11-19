@@ -79,29 +79,9 @@
   #topBar .down { color:#e03e3e; }
   #topBar .tb-sub { font-size:11.5px; color:#99a; font-weight:400; }
   #topBar .tb-hint { margin-left:auto; font-size:12px; color:#2f6fed; white-space:nowrap; }
-  #gate { position:fixed; inset:0; z-index:9999; background:#0f1b2d; display:flex; align-items:center; justify-content:center; font-family:-apple-system,"Microsoft YaHei",sans-serif; }
-  #gate .box { background:#16263c; padding:32px 38px; border-radius:14px; box-shadow:0 10px 40px rgba(0,0,0,.45); text-align:center; }
-  #gate h1 { color:#e8eef6; font-size:18px; margin:0 0 6px; font-weight:600; }
-  #gate .sub { color:#9fb0c4; font-size:12.5px; margin:0 0 20px; }
-  #gate input { width:220px; padding:11px 13px; border-radius:8px; border:1px solid #34507a; background:#0f1b2d; color:#fff; font-size:15px; text-align:center; outline:none; }
-  #gate button { margin-top:14px; width:100%; padding:11px; border:none; border-radius:8px; background:#2f6fd6; color:#fff; font-size:15px; cursor:pointer; }
-  #gate button:hover { background:#3a7ee8; }
-  #gate .err { color:#ff8585; font-size:12.5px; margin-top:12px; min-height:16px; }
-  #gate.shake { animation:gshake .35s; }
-  @keyframes gshake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
 </style>
 </head>
 <body>
-<div id="gate">
-  <div class="box">
-    <h1>重庆机组状态可视化</h1>
-    <p class="sub">内部资料 · 请输入查看密码</p>
-    <input id="gatePwd" type="password" placeholder="密码" autocomplete="off" />
-    <br/>
-    <button id="gateBtn">查 看</button>
-    <div class="err" id="gateErr"></div>
-  </div>
-</div>
 <header>
   <h1>机组状态开关机可视化 <span class="tag">原型·验收用</span></h1>
   <p>0 = 停运（底部）　|　1 = 运行（爬升）　·　单台看开关机轨迹，类型平铺看全盘哪些开哪些关；容量/发电量按“满发”假设（0/1×装机容量），辅助研判现货供给松紧与价格涨跌</p>
@@ -600,21 +580,8 @@ function render(){
   if(cur.mode==="tiles"){ cv.style.display="none"; $("tilesWrap").style.display="block"; drawTiles(); }
   else { $("tilesWrap").style.display="none"; cv.style.display="block"; if(cur.mode==="single") drawSingle(); else drawTotal(); }
 }
-const VIEW_PASS = "123456";
-function tryUnlock(){
-  var pwd = document.getElementById("gatePwd").value;
-  if(pwd === VIEW_PASS){
-    document.getElementById("gate").style.display = "none";
-    init(); render();
-  } else {
-    var g = document.getElementById("gate");
-    g.classList.add("shake");
-    document.getElementById("gateErr").textContent = "密码错误，请重试";
-    setTimeout(function(){ g.classList.remove("shake"); }, 400);
-  }
-}
-document.getElementById("gateBtn").onclick = tryUnlock;
-document.getElementById("gatePwd").addEventListener("keydown", function(e){ if(e.key==="Enter") tryUnlock(); });
+// 无密码：页面打开即渲染
+init();
 window.addEventListener("resize", ()=>{ if(cur.mode==="tiles") drawTiles(); else render(); });
 </script>
 </body>
